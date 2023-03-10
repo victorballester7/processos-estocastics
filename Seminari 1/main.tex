@@ -1,0 +1,207 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsthm, amsmath, mathtools, amssymb}
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
+\usepackage[colorlinks,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+\usepackage[catalan]{babel}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{physics}
+\usepackage{fancyhdr}
+
+\newcommand{\NN}{\ensuremath{\mathbb{N}}} % set of natural numbers
+\newcommand{\ZZ}{\ensuremath{\mathbb{Z}}} % set of integers
+\newcommand{\QQ}{\ensuremath{\mathbb{Q}}} % set of rationals
+\newcommand{\RR}{\ensuremath{\mathbb{R}}} % set of real numbers
+\newcommand{\CC}{\ensuremath{\mathbb{C}}} % set of complex numbers
+\newcommand{\KK}{\ensuremath{\mathbb{K}}} % a general field
+
+\newcommand{\vf}[1]{\boldsymbol{\mathrm{#1}}} % math style for vectors and matrices and vector-values functions (previously it was \*vb{#1} but this does not apply to greek letters)
+\newcommand{\ii}{\mathrm{i}} % imaginary unit
+\renewcommand{\O}{\mathrm{O}} % big O-notation
+
+
+%%% PROBABILITY
+\newcommand{\Prob}{\ensuremath{\mathbb{P}}} % probability
+\newcommand{\Exp}{\mathbb{E}} % expected value
+\newcommand{\Var}{\mathrm{Var}} % variance
+\newcommand{\cov}{\mathrm{Cov}} % covariance
+\newcommand{\iid}{i.i.d.\ } % independent and identically distributed
+\newcommand{\indi}[1]{\vf{1}_{#1}}
+\newcommand{\almoste}[1]{\overset{\text{a.e.}}{#1}} % almost everywhere
+
+
+%%% STATISTICS
+\DeclareMathOperator{\bias}{bias} % Bias
+\DeclareMathOperator{\MSE}{MSE} % Mean Square Error
+\DeclareMathOperator{\Mod}{Mod} % mode
+\DeclareMathOperator{\Med}{Med} % median
+\DeclareMathOperator*{\argmax}{arg\,max} % argument where the maximum is attained
+\DeclareMathOperator*{\argmin}{arg\,min} % argument where the minimum is attained
+
+
+
+\newtheorem{theorem}{Teorema}
+\newtheorem{prop}{Proposició}
+\newtheorem{exercici}{Exercici}
+\theoremstyle{definition}
+\newtheorem{definition}{Definició}
+\theoremstyle{remark}
+\newtheorem{res}{Resolució}
+\DeclareDocumentCommand\derivative{ s o m g d() }{ 
+  % Total derivative
+  % s: star for \flatfrac flat derivative
+  % o: optional n for nth derivative
+  % m: mandatory (x in df/dx)
+  % g: optional (f in df/dx)
+  % d: long-form d/dx(...)
+    \IfBooleanTF{#1}
+    {\let\fractype\flatfrac}
+    {\let\fractype\frac}
+    \IfNoValueTF{#4}
+    {
+        \IfNoValueTF{#5}
+        {\fractype{\diffd \IfNoValueTF{#2}{}{^{#2}}}{\diffd #3\IfNoValueTF{#2}{}{^{#2}}}}
+        {\fractype{\diffd \IfNoValueTF{#2}{}{^{#2}}}{\diffd #3\IfNoValueTF{#2}{}{^{#2}}} \argopen(#5\argclose)}
+    }
+    {\fractype{\diffd \IfNoValueTF{#2}{}{^{#2}} #3}{\diffd #4\IfNoValueTF{#2}{}{^{#2}}}\IfValueT{#5}{(#5)}}
+} % differential operator
+\DeclareDocumentCommand\partialderivative{ s o m g d() }{ 
+  % Total derivative
+  % s: star for \flatfrac flat derivative
+  % o: optional n for nth derivative
+  % m: mandatory (x in df/dx)
+  % g: optional (f in df/dx)
+  % d: long-form d/dx(...)
+  \IfBooleanTF{#1}
+    {\let\fractype\flatfrac}
+    {\let\fractype\frac}
+    \IfNoValueTF{#4}{
+      \IfNoValueTF{#5}
+      {\fractype{\partial \IfNoValueTF{#2}{}{^{#2}}}{\partial #3\IfNoValueTF{#2}{}{^{#2}}}}
+      {\fractype{\partial \IfNoValueTF{#2}{}{^{#2}}}{\partial #3\IfNoValueTF{#2}{}{^{#2}}} \argopen(#5\argclose)}
+    }
+    {\fractype{\partial \IfNoValueTF{#2}{}{^{#2}} #3}{\partial #4\IfNoValueTF{#2}{}{^{#2}}}\IfValueT{#5}{(#5)}}
+} % partial differential operator
+
+\titleformat{\section}
+  {\normalfont\fontsize{11}{15}\bfseries}{\thesection}{1em}{}
+
+\renewcommand{\theenumi}{\textbf{\arabic{enumi}}}
+\renewcommand{\theenumii}{\textbf{\alph{enumii}}}
+\renewcommand{\theenumiii}{\textbf{\roman{enumiii}}}
+
+\renewcommand{\exp}[1]{\mathrm{e}^{#1}} % exponential function
+\DeclareMathOperator*{\im}{Im}
+
+\title{\bfseries\Large Seminari 1\\Processos de Ramificació}
+
+\author{Víctor Ballester Ribó\\NIU: 1570866}
+\date{\parbox{\linewidth}{\centering
+  Processos estocàstic\endgraf
+  Grau en Matemàtiques\endgraf
+  Universitat Autònoma de Barcelona\endgraf
+  Març de 2023}}
+  \pagestyle{fancy}
+  \fancyhf{}
+  \fancyhfoffset[L]{1cm}
+  \fancyhfoffset[R]{1cm}
+  \rhead{NIU: 1570866}
+  \lhead{Víctor Ballester}
+  \cfoot{\thepage}
+  %\setlength{\headheight}{13.6pt}
+
+\setlength{\parindent}{0pt}
+\begin{document}
+\selectlanguage{catalan}
+\maketitle
+\begin{exercici}
+  Demostreu que si $(X_n)$ és un procés de Galton-Watson i $\Exp(Z_n^{(k)}) \leq 1$ aleshores tenim que $X_n \to 0$ quasi segurament.
+\end{exercici}
+\begin{res}
+  Tenim que, com que $\Exp(Z_n^{(k)}) \leq 1$, la probabilitat d'extinció és 1. Per tant, $\Prob(\text{extinció})=\Prob\left(\exists k\in\NN\cup\{0\}:X_n=0\ \forall n\geq k\right)=1$ i tenim les següents implicacions:
+  \begin{equation*}
+    \Prob\left(\exists k\in\NN\cup\{0\}:X_n=0\ \forall n\geq k\right)=1 \implies\Prob(\lim_{n\to\infty}X_n=0)=1  \implies X_n\almoste{\longrightarrow}0
+  \end{equation*}
+  on en la primera implicació hem untilitzat que les variables $X_n$ prenen valors en un conjunt discret, i per tant, la successió (el límit de la qual existeix per Galton-Watson) ha de ser constant a partir d'un punt i viceversa.
+\end{res}
+\begin{exercici}
+  Denotem $m:=\Exp(Z_{n+1}^{(k)})$ que suposem finita. Demostreu que: $$\Exp(X_n)=m^n$$
+  Deduïu el comportament límit del nombre mitjà d'individus. Observeu que, en particular, en el cas $m=1$ tenim que $\Exp(X_n)=1$ $\forall n\in\NN\cup\{0\}$ i en canvi $X_n\to 0$ quasi segurament.
+\end{exercici}
+\begin{res}
+  Per hipòtesi totes les $Z_n^{(k)}$ tenen la mateixa distribució, que li direm $Z$. Llavors, pel teorema de Wald, tenim que $\forall n\in\NN$:
+  $$\Exp(X_n)=\Exp\left(\sum_{k=1}^{X_{n-1}}Z_n^{(k)}\right)=\Exp(X_{n-1})\Exp(Z)=m\Exp(X_{n-1})$$
+  Expandint aquesta recurrència i utilitzant que $\Exp(X_0)=1$ ja que $X_0(\omega)=1$ $\forall\omega\in\Omega$ deduïm que:
+  $$\Exp(X_n)=m\Exp(X_{n-1})=m^2\Exp(X_{n-2})=\cdots=m^n\Exp(X_0)=m^n$$
+\end{res}
+\begin{exercici}
+  Calculeu el nombre esperat del total de descendents d'un individu.
+\end{exercici}
+\begin{res}
+  Com que les generacions són independents, podem calcular el nombre esperat de descendents des del primer individu. Tenim que cal calcular el valor de $$\Exp\left(\sum_{n=1}^\infty X_n\right)$$
+  Com que les variables $X_n$ són positives:
+  $$\Exp\left(\sum_{n=1}^\infty X_n\right)=\sum_{n=1}^\infty\Exp(X_n)=\sum_{n=1}^\infty m^n=
+    \begin{cases}
+      \frac{m}{1-m} & \text{ si $m <1$}     \\
+      \infty        & \text{ si $m \geq 1$}
+    \end{cases}$$
+\end{res}
+\begin{exercici}
+  Suposem ara que les variables aleatòries $Z_n^{(k)}$ tenen moment de segon ordre finit i sigui $\sigma^2=\Var(Z_n^{(k)})$. Proveu que:
+  $$\Var(X_n)=
+    \begin{cases}
+      \sigma^2 n                                    & \text{ si $m=1$}    \\
+      \sigma^2m^{n-1}\left(\frac{1-m^n}{1-m}\right) & \text{ si $m\ne 1$}
+    \end{cases}
+  $$
+\end{exercici}
+\begin{res}
+  Em de fer servir la fórmula per la variància vista a la llista de problemes quan les sumes són aleatòries. Tenim que $\forall n\in\NN$:
+  $$\Var(X_n)=\Exp\left(\sum_{k=1}^{X_{n-1}}Z_n^{(k)}\right)=\Exp(X_{n-1})\Var(Z)+{\Exp(Z)}^2\Var(X_{n-1})=m^{n-1}\sigma^2+m^2\Var(X_{n-1})$$
+  Continuant la recurrència, tenim que:
+  $$\Var(X_n)=m^{n-1}\sigma^2+m^2\Var(X_{n-1})=\cdots=m^{n-1}\sigma^2(1+m+\cdots+m^{n-1})+m^{2n}\Var(X_0)$$
+  Com que $\Var(X_0)=0$, tenim que:
+  $$
+    \Var(X_n)=
+    \begin{cases}
+      \sigma^2n                        & \text{si $m=1$}    \\
+      \sigma^2m^{n-1}\frac{m^n-1}{m-1} & \text{si $m\ne 1$}
+    \end{cases}
+  $$
+\end{res}
+\begin{exercici}
+  Se suposa que el nombre mitjà d'immigrants que arriben en cada generació és constant, és a dir $\Exp(Y_n)=\lambda$ $\forall n\in\NN$ i per un cert $\lambda>0$. Aleshores:
+  $$
+    \Exp(X_n)=
+    \begin{cases}
+      1+ \lambda n                 & \text{ si $m=1$}    \\
+      m^n+\lambda\frac{1-m^n}{1-m} & \text{ si $m\ne 1$}
+    \end{cases}
+  $$
+\end{exercici}
+\begin{res}
+  Tenim ara que $X_n=\sum_{k=1}^{X_{n-1}}Z_n^{(k)}+Y_{n+1}$. Per tant, usant el teorema de Wald:
+  $$\Exp\left(X_n\right)=\Exp(X_{n-1})\Exp(Z)+\Exp(Y_{n+1})=m\Exp(X_{n-1})+\lambda$$
+  Continuant amb la recurrència tenim que:
+  $$\Exp\left(X_n\right)=\lambda(1+m+\cdots+m^{n-1})+m^n\Exp(X_0)=\lambda(1+m+\cdots+m^{n-1})+m^n=
+    \begin{cases}
+      1+ \lambda n                 & \text{ si $m=1$}    \\
+      m^n+\lambda\frac{1-m^n}{1-m} & \text{ si $m\ne 1$}
+    \end{cases}$$
+
+\end{res}
+\begin{exercici}
+  Suposem que les $Y_n$ són variables aleatòries independents amb la mateixa distribució i que $\Prob(Y_n\geq 1)>0$. Aleshores la probabilitat d'extinció definitiva és 0.
+\end{exercici}
+\begin{res}
+  Volem calcular $$\Prob(\text{extinció})=\Prob\left(\exists k\in\NN\cup\{0\}:X_n=0\ \forall n\geq k\right)\leq\Prob\left(\exists k\in\NN\cup\{0\}:Y_n=0\ \forall n\geq k\right)$$
+  ja que tenim la inclusió de conjunts $\{\exists k\in\NN\cup\{0\}:X_n=0\ \forall n\geq k\}\subseteq\{\exists k\in\NN\cup\{0\}:Y_n=0\ \forall n\geq k\}$. Ara bé:
+  $$\Prob\left(\exists k\in\NN\cup\{0\}:Y_n=0\ \forall n\geq k\right)=\Prob\left(\bigcup_{k=1}^\infty\bigcap_{n=k}^\infty\{Y_n=0\}\right)\leq\sum_{k=1}^\infty\Prob\left(\bigcap_{n=k}^\infty \{Y_n=0\}\right)$$
+  Veurem que totes les probabilitats $\Prob\left(\bigcap_{n=k}^\infty \{Y_n=0\}\right)$ són 0. Siguin $A_N:=\bigcap_{n=k}^N \{Y_n=0\}$. Observem que $A_{N+1}\subseteq A_{N}$ $\forall N\geq k$. Per tant, pel lema de les interseccions decreixents, tenim que:
+  $$\Prob\left(\bigcap_{n=k}^\infty \{Y_n=0\}\right)=\Prob(\lim_{N\to\infty}A_N)=\lim_{N\to\infty}\Prob(A_N)$$
+  Ara bé, com que les variables $Y_n$ són \iid, tenim que:
+  $$\Prob(A_N)=\Prob\left(\bigcap_{n=k}^N \{Y_n=0\}\right)={\Prob(Y_1=0)}^{N-k+1}$$
+  que és estrictament menor que 1 per hipòtesi. Per tant, $\displaystyle\lim_{N\to\infty}\Prob(A_N)=0$ i refent els càlculs deduïm que $\Prob(\text{extinció})=0$.
+\end{res}
+\end{document}

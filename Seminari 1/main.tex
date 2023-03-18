@@ -26,7 +26,7 @@
 \newcommand{\Exp}{\mathbb{E}} % expected value
 \newcommand{\Var}{\mathrm{Var}} % variance
 \newcommand{\cov}{\mathrm{Cov}} % covariance
-\newcommand{\iid}{i.i.d.\ } % independent and identically distributed
+\newcommand{\iid}{i.i.d.} % independent and identically distributed
 \newcommand{\indi}[1]{\vf{1}_{#1}}
 \newcommand{\almoste}[1]{\overset{\text{a.e.}}{#1}} % almost everywhere
 
@@ -119,11 +119,11 @@
   Demostreu que si $(X_n)$ és un procés de Galton-Watson i $\Exp(Z_n^{(k)}) \leq 1$ aleshores tenim que $X_n \to 0$ quasi segurament.
 \end{exercici}
 \begin{res}
-  Tenim que, com que $\Exp(Z_n^{(k)}) \leq 1$, la probabilitat d'extinció és 1. Per tant, $\Prob(\text{extinció})=\Prob\left(\exists k\in\NN\cup\{0\}:X_n=0\ \forall n\geq k\right)=1$ i tenim les següents implicacions:
+  Tenim que pel teorema de caracterització dels processos de Galton-Watson, com que $\Exp(Z_n^{(k)}) \leq 1$, la probabilitat d'extinció és 1. Per tant, $\Prob(\text{extinció})=\Prob\left(\exists k\in\NN\cup\{0\}:X_n=0\ \forall n\geq k\right)=1$ i tenim les següents implicacions:
   \begin{equation*}
-    \Prob\left(\exists k\in\NN\cup\{0\}:X_n=0\ \forall n\geq k\right)=1 \implies\Prob(\lim_{n\to\infty}X_n=0)=1  \implies X_n\almoste{\longrightarrow}0
+    \Prob\left(\exists k\in\NN\cup\{0\}:X_n=0\ \forall n\geq k\right)=1 \implies\Prob\left(\lim_{n\to\infty}X_n=0\right)=1  \implies X_n\almoste{\longrightarrow}0
   \end{equation*}
-  on en la primera implicació hem untilitzat que les variables $X_n$ prenen valors en un conjunt discret, i per tant, la successió (el límit de la qual existeix per Galton-Watson) ha de ser constant a partir d'un punt i viceversa.
+  on en la primera implicació hem utilitzat que les variables $X_n$ prenen valors en un conjunt discret, i per tant, la successió (el límit de la qual existeix per Galton-Watson) ha de ser constant a partir d'un punt.
 \end{res}
 \begin{exercici}
   Denotem $m:=\Exp(Z_{n+1}^{(k)})$ que suposem finita. Demostreu que: $$\Exp(X_n)=m^n$$
@@ -134,13 +134,19 @@
   $$\Exp(X_n)=\Exp\left(\sum_{k=1}^{X_{n-1}}Z_n^{(k)}\right)=\Exp(X_{n-1})\Exp(Z)=m\Exp(X_{n-1})$$
   Expandint aquesta recurrència i utilitzant que $\Exp(X_0)=1$ ja que $X_0(\omega)=1$ $\forall\omega\in\Omega$ deduïm que:
   $$\Exp(X_n)=m\Exp(X_{n-1})=m^2\Exp(X_{n-2})=\cdots=m^n\Exp(X_0)=m^n$$
+  Per tant:
+  $$\lim_{n\to\infty}\Exp(X_n)=\begin{cases}
+      +\infty & \text{si $m>1$} \\
+      1       & \text{si $m=1$} \\
+      0       & \text{si $m<1$}
+    \end{cases}$$
 \end{res}
 \begin{exercici}
   Calculeu el nombre esperat del total de descendents d'un individu.
 \end{exercici}
 \begin{res}
-  Com que les generacions són independents, podem calcular el nombre esperat de descendents des del primer individu. Tenim que cal calcular el valor de $$\Exp\left(\sum_{n=1}^\infty X_n\right)$$
-  Com que les variables $X_n$ són positives:
+  Com que les generacions són independents el que ens demanen és equivalent a calcular el nombre esperat de descendents des del primer individu. Hem de calcular, doncs, el valor de: $$\Exp\left(\sum_{n=1}^\infty X_n\right)$$
+  Com que les variables $X_n$ són positives, tenim que:
   $$\Exp\left(\sum_{n=1}^\infty X_n\right)=\sum_{n=1}^\infty\Exp(X_n)=\sum_{n=1}^\infty m^n=
     \begin{cases}
       \frac{m}{1-m} & \text{ si $m <1$}     \\
@@ -157,7 +163,7 @@
   $$
 \end{exercici}
 \begin{res}
-  Em de fer servir la fórmula per la variància vista a la llista de problemes quan les sumes són aleatòries. Tenim que $\forall n\in\NN$:
+  Em de fer servir la fórmula per la variància vista a la llista de problemes quan les sumes són aleatòries (i tot és independent). Tenim que $\forall n\in\NN$:
   $$\Var(X_n)=\Exp\left(\sum_{k=1}^{X_{n-1}}Z_n^{(k)}\right)=\Exp(X_{n-1})\Var(Z)+{\Exp(Z)}^2\Var(X_{n-1})=m^{n-1}\sigma^2+m^2\Var(X_{n-1})$$
   Continuant la recurrència, tenim que:
   $$\Var(X_n)=m^{n-1}\sigma^2+m^2\Var(X_{n-1})=\cdots=m^{n-1}\sigma^2(1+m+\cdots+m^{n-1})+m^{2n}\Var(X_0)$$
@@ -171,7 +177,7 @@
   $$
 \end{res}
 \begin{exercici}
-  Se suposa que el nombre mitjà d'immigrants que arriben en cada generació és constant, és a dir $\Exp(Y_n)=\lambda$ $\forall n\in\NN$ i per un cert $\lambda>0$. Aleshores:
+  Suposem ara que $$X_{n+1}=\sum_{k=1}^{X_n}Z_{n+1}^{(k)}+Y_{n+1}$$ on $Y_{n}$ és un nombre aleatori d'immigrants que arriben a la generació $n$, independentment de les $Z_{n+1}^{(k)}$. Suposem que el nombre mitjà d'immigrants que arriben en cada generació és constant, és a dir $\Exp(Y_n)=\lambda$ $\forall n\in\NN$ i per un cert $\lambda>0$. Aleshores:
   $$
     \Exp(X_n)=
     \begin{cases}
@@ -184,7 +190,7 @@
   Tenim ara que $X_n=\sum_{k=1}^{X_{n-1}}Z_n^{(k)}+Y_{n+1}$. Per tant, usant el teorema de Wald:
   $$\Exp\left(X_n\right)=\Exp(X_{n-1})\Exp(Z)+\Exp(Y_{n+1})=m\Exp(X_{n-1})+\lambda$$
   Continuant amb la recurrència tenim que:
-  $$\Exp\left(X_n\right)=\lambda(1+m+\cdots+m^{n-1})+m^n\Exp(X_0)=\lambda(1+m+\cdots+m^{n-1})+m^n=
+  $$\Exp\left(X_n\right)=m^n\Exp(X_0)+\lambda(1+m+\cdots+m^{n-1})=m^n+\lambda(1+m+\cdots+m^{n-1})=
     \begin{cases}
       1+ \lambda n                 & \text{ si $m=1$}    \\
       m^n+\lambda\frac{1-m^n}{1-m} & \text{ si $m\ne 1$}
@@ -196,12 +202,12 @@
 \end{exercici}
 \begin{res}
   Volem calcular $$\Prob(\text{extinció})=\Prob\left(\exists k\in\NN\cup\{0\}:X_n=0\ \forall n\geq k\right)\leq\Prob\left(\exists k\in\NN\cup\{0\}:Y_n=0\ \forall n\geq k\right)$$
-  ja que tenim la inclusió de conjunts $\{\exists k\in\NN\cup\{0\}:X_n=0\ \forall n\geq k\}\subseteq\{\exists k\in\NN\cup\{0\}:Y_n=0\ \forall n\geq k\}$. Ara bé:
+  on la desigualtat és del fet que tenim la inclusió de conjunts $\{\exists k\in\NN\cup\{0\}:X_n=0\ \forall n\geq k\}\subseteq\{\exists k\in\NN\cup\{0\}:Y_n=0\ \forall n\geq k\}$. Ara bé:
   $$\Prob\left(\exists k\in\NN\cup\{0\}:Y_n=0\ \forall n\geq k\right)=\Prob\left(\bigcup_{k=1}^\infty\bigcap_{n=k}^\infty\{Y_n=0\}\right)\leq\sum_{k=1}^\infty\Prob\left(\bigcap_{n=k}^\infty \{Y_n=0\}\right)$$
   Veurem que totes les probabilitats $\Prob\left(\bigcap_{n=k}^\infty \{Y_n=0\}\right)$ són 0. Siguin $A_N:=\bigcap_{n=k}^N \{Y_n=0\}$. Observem que $A_{N+1}\subseteq A_{N}$ $\forall N\geq k$. Per tant, pel lema de les interseccions decreixents, tenim que:
-  $$\Prob\left(\bigcap_{n=k}^\infty \{Y_n=0\}\right)=\Prob(\lim_{N\to\infty}A_N)=\lim_{N\to\infty}\Prob(A_N)$$
+  $$\Prob\left(\bigcap_{n=k}^\infty \{Y_n=0\}\right)=\Prob\left(\lim_{N\to\infty}A_N\right)=\lim_{N\to\infty}\Prob(A_N)$$
   Ara bé, com que les variables $Y_n$ són \iid, tenim que:
-  $$\Prob(A_N)=\Prob\left(\bigcap_{n=k}^N \{Y_n=0\}\right)={\Prob(Y_1=0)}^{N-k+1}$$
-  que és estrictament menor que 1 per hipòtesi. Per tant, $\displaystyle\lim_{N\to\infty}\Prob(A_N)=0$ i refent els càlculs deduïm que $\Prob(\text{extinció})=0$.
+  $$\Prob(A_N)=\Prob\left(\bigcap_{n=k}^N \{Y_n=0\}\right)=\bigcap_{n=k}^N \Prob\left(Y_n=0\right)={\Prob(Y_1=0)}^{N-k+1}$$
+  que és estrictament menor que 1 per la hipòtesi inicial. Per tant, $\displaystyle\lim_{N\to\infty}\Prob(A_N)=0$ i refent els càlculs deduïm que $\Prob(\text{extinció})=0$.
 \end{res}
 \end{document}

@@ -1,0 +1,66 @@
+\documentclass{standalone}
+\usepackage{pgfplots}
+\pgfplotsset{compat=newest}
+
+\begin{document}
+
+\begin{tikzpicture}
+  \begin{axis}[
+      xlabel=$t$,
+      % ylabel=Value,
+      xmin=0,
+      xmax=28,
+      ymin=-10,
+      ymax=10,
+      axis lines=middle,
+      xtick=\empty,
+      ytick=\empty,
+      extra x ticks = {1,25,9},
+      extra x tick labels={$a$, $b$, $s_k$},
+      extra y ticks = {4,6},
+      extra y tick labels={$\alpha$, $\beta$},
+    ]
+    \addplot[thick,mark=*,mark size=1pt,blue!40] coordinates {
+        (1,-4)
+        (2,-5)
+        (3,-4)
+        (4,-3)
+        (5,-2)
+        (6,-1)
+        (7,-2)
+        (8,-1)
+        (9,-0)
+      };
+    \addplot[thick,mark=*,mark size=1pt,blue!60!black] coordinates {
+        (1,4)
+        (2,5)
+        (3,4)
+        (4,3)
+        (5,2)
+        (6,1)
+        (7,2)
+        (8,1)
+        (9,0)
+        (10,-1)
+        (11,0)
+        (12,1)
+        (13,0)
+        (14,-1)
+        (15,-2)
+        (16,-3)
+        (17,-2)
+        (18,-1)
+        (19,0)
+        (20,1)
+        (21,2)
+        (22,3)
+        (23,4)
+        (24,5)
+        (25,6)
+      };
+
+
+  \end{axis}
+\end{tikzpicture}
+
+\end{document}
